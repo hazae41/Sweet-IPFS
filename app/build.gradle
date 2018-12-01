@@ -27,7 +27,7 @@ android {
         variant.assemble.doLast { assemble ->
             copy {
                 from variant.outputs*.outputFile
-                into file("/apk")
+                into file("./apk")
             }
         }
     }

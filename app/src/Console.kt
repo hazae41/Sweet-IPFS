@@ -19,7 +19,15 @@ import com.google.gson.JsonParser
 import kotlinx.android.synthetic.main.activity_console.*
 import java.io.FileReader
 import android.text.InputType
-
+import android.R.attr.data
+import android.R.attr.src
+import android.os.Environment
+import java.io.File
+import android.os.Environment.getExternalStorageDirectory
+import android.util.Log
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.nio.channels.FileChannel
 
 
 class ConsoleActivity: AppCompatActivity() {
@@ -257,6 +265,16 @@ class ConsoleActivity: AppCompatActivity() {
                             isChecked = false
                         }.setOnMenuItemClickListener{notimpl()}
                     }
+                    add(getString(R.string.menu_swarm_key)).setOnMenuItemClickListener{
+                        val intent = Intent()
+                                .setType("*/*")
+                                .setAction(Intent.ACTION_GET_CONTENT)
+
+                        val chooser = Intent.createChooser(intent, "Select your swarm.key file")
+                        startActivityForResult(chooser, 111)
+
+                        true
+                    }
                 }
             }.show()
         }
@@ -266,11 +284,25 @@ class ConsoleActivity: AppCompatActivity() {
     override fun onActivityResult(req: Int, res: Int, rdata: Intent?){
         super.onActivityResult(req, res, rdata)
         if(res != RESULT_OK) return;
+
         when(req){
             1 -> Intent(ctx, ShareActivity::class.java).apply {
                 data = rdata?.data ?: return
                 action = ACTION_SEND
                 startActivity(this)
+            }
+            111 -> {
+                val selectedFile = rdata?.data
+                val ipfs_dir = ctx.getExternalFilesDir(null)["ipfs"]
+                val destination = File(ipfs_dir.absolutePath + "/swarm.key")
+                val pathSegments = selectedFile?.path
+                val path = pathSegments!!.split(":")[1]
+                var input = FileInputStream(path).channel
+                var output = FileOutputStream(destination).channel;
+                input.transferTo(0, input.size(), output);
+                if (input != null) input.close()
+                if (output != null) output.close()
+                true
             }
         }
     }

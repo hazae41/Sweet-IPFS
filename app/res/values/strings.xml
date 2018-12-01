@@ -77,4 +77,5 @@
     <string name="apply">Apply</string>
     <string name="title_add_folder">Add folder to IPFS</string>
     <string name="title_add_text">Add text to IPFS</string>
+    <string name="menu_swarm_key">Swarm Key...</string>
 </resources>
