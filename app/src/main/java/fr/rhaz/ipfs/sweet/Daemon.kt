@@ -6,30 +6,17 @@ import android.app.NotificationManager
 import android.app.NotificationManager.IMPORTANCE_MIN
 import android.app.Service
 import android.content.Context
-import android.content.Context.*
 import android.content.Intent
 import android.graphics.Color.parseColor
 import android.os.Build
 import android.os.Build.CPU_ABI
-import android.os.Build.SUPPORTED_ABIS
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonObject
-import com.google.gson.JsonParser
-import kotlinx.coroutines.*
-import java.io.File
-import java.io.FileReader
-import java.io.InterruptedIOException
-import java.lang.Runtime.getRuntime
-import androidx.core.content.ContextCompat.getSystemService
 
 class DaemonService : Service() {
 
     override fun onBind(intent: Intent) = null
 
-    companion object{
+    companion object {
         var daemon: Process? = null
         var logs: MutableList<String> = mutableListOf()
     }
@@ -52,10 +39,10 @@ class DaemonService : Service() {
     fun install() {
 
         val type = CPU_ABI.let {
-            when{
+            when {
                 it.startsWith("arm") -> "arm"
                 it.startsWith("x86") -> "386"
-                else ->  throw Exception("Unsupported ABI")
+                else -> throw Exception("Unsupported ABI")
             }
         }
 
@@ -81,7 +68,7 @@ class DaemonService : Service() {
         logs.clear()
 
         exec("init").apply {
-            read{ logs.add(it) }
+            read { logs.add(it) }
             waitFor()
         }
 
@@ -98,9 +85,9 @@ class DaemonService : Service() {
                     val put = json("PUT")
                     val get = json("GET")
                     val post = json("POST")
-                    if(put !in methods) methods.add(put)
-                    if(get !in methods) methods.add(get)
-                    if(post !in methods) methods.add(post)
+                    if (put !in methods) methods.add(put)
+                    if (get !in methods) methods.add(get)
+                    if (post !in methods) methods.add(post)
                 }
             }
 
@@ -108,7 +95,7 @@ class DaemonService : Service() {
 
         exec("daemon").apply {
             daemon = this
-            read{ logs.add(it) }
+            read { logs.add(it) }
         }
     }
 
@@ -134,14 +121,12 @@ class DaemonService : Service() {
             setContentIntent(open)
             addAction(R.drawable.ic_cloud, "Open", open)
 
-            if(daemon == null){
+            if (daemon == null) {
                 setContentText("IPFS is not running")
 
                 val start = pendingService(intent<DaemonService>().action("start"))
                 addAction(R.drawable.ic_cloud, "start", start)
-            }
-
-            else {
+            } else {
                 setContentText("IPFS is running")
 
                 val restart = pendingService(intent<DaemonService>().action("restart"))
@@ -166,7 +151,7 @@ class DaemonService : Service() {
             "exit" -> System.exit(0)
         }
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            manager.notify(1, notification.build())
+        manager.notify(1, notification.build())
     }
 
 }

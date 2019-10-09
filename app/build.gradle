@@ -13,7 +13,7 @@ android {
         applicationId "fr.rhaz.ipfs.sweet"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 39
+        versionCode 44
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

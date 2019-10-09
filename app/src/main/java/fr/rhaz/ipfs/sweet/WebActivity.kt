@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import im.delight.android.webview.AdvancedWebView
 import kotlinx.android.synthetic.main.activity_web.*
@@ -39,7 +38,7 @@ class WebActivity : AppCompatActivity(), AdvancedWebView.Listener {
                 @JavascriptInterface
                 fun execute(msg: String) {
                     DaemonService.logs.add("> $msg")
-                    exec(msg).read{ DaemonService.logs.add(it) }
+                    exec(msg).read { DaemonService.logs.add(it) }
                 }
             }, "android")
 
